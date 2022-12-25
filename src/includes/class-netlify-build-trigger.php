@@ -218,25 +218,28 @@ class Netlify_Build_Trigger {
 }
 
 function get_config() {
-	$setting = get_option('dbi_example_plugin_options');
+	$setting = get_option(NetlifyAdminMenu::$optionsName);
 	return $setting;
 }
 
 function build_site() {
-	$setting = get_option('dbi_example_plugin_options');
-	return $setting;
-
-	// return "got it!!!";
+	$setting = get_option(NetlifyAdminMenu::$optionsName);
+	if($setting['build_hook']) {
+		wp_remote_post($setting['build_hook']);
+		return true;
+	} else {
+		return false;
+	}
 }
 
 add_action( 'rest_api_init', function () {
-	register_rest_route( 'myplugin/v1', '/build', array(
+	register_rest_route( 'netlify-build-trigger/v1', '/build', array(
 		'methods' => 'POST',
 		'callback' => 'build_site',
 	) );
 
-	register_rest_route( 'myplugin/v1', '/config', array(
+	register_rest_route( 'netlify-build-trigger/v1', '/config', array(
 		'methods' => 'GET',
-		'callback' => 'get_settings',
+		'callback' => 'get_config',
 	) );
 } );

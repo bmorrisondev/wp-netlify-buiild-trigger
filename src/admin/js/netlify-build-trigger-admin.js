@@ -37,14 +37,27 @@
 // 	</a>
 // </li>
 
-	$(function() {
-		const buildBtn = document.createElement("li")
-		buildBtn.id = "netlify-build-btn"
-		buildBtn.innerHTML = `<a class="ab-item" href="#">
-				<span class="ab-label" aria-hidden="true">Build Netlify Site</span>
-			</a>`
-		const toolbar = document.getElementById("wp-admin-bar-root-default")
-		toolbar.appendChild(buildBtn)
+	$(async function() {
+		let res = await fetch('/wp-json/netlify-build-trigger/v1/config')
+		let json = await res.json()
+		console.log(json)
+
+		if(json.build_hook) {
+			const buildBtn = document.createElement("li")
+			buildBtn.id = "netlify-build-btn"
+			buildBtn.innerHTML = `<a class="ab-item" href="#">
+					<span class="dashicons dashicons-controls-play"></span>
+					<span class="ab-label" aria-hidden="true">Build Netlify Site</span>
+				</a>`
+
+			buildBtn.onclick = async function () {
+				await fetch('/wp-json/netlify-build-trigger/v1/build', {
+					method: 'post'
+				})
+			}
+			const toolbar = document.getElementById("wp-admin-bar-root-default")
+			toolbar.appendChild(buildBtn)
+		}
 	});
 
 })( jQuery );

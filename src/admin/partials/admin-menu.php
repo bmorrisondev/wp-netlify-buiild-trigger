@@ -1,47 +1,50 @@
 <?php
 
-function dbi_plugin_section_text() {
-  echo '<p>Here you can set all the options for using the API</p>';
-}
+class NetlifyAdminMenu {
+  // public static $optionsName = "dbi_example_plugin_options";
+  public static $pageSlug = "netlify-build-trigger";
+  public static $pageKey = "brianmmdev_netlify_build_trigger";
+  public static $optionsName = "brianmmdev_netlify_build_trigger_options";
 
-function dbi_plugin_setting_api_key() {
-  $options = get_option( 'dbi_example_plugin_options' );
-  echo "<input id='dbi_plugin_setting_api_key' name='dbi_example_plugin_options[api_key]' type='text' value='" . esc_attr( $options['api_key'] ) . "' />";
-}
+  public function __construct() {
+    add_action( 'admin_menu', [$this, 'add_settings_page'] );
+    add_action( 'admin_init', [$this, 'register_settings'] );
+  }
 
-function dbi_plugin_setting_results_limit() {
-  $options = get_option( 'dbi_example_plugin_options' );
-  echo "<input id='dbi_plugin_setting_results_limit' name='dbi_example_plugin_options[results_limit]' type='text' value='" . esc_attr( $options['results_limit'] ) . "' />";
-}
+  public function add_settings_page() {
+    add_options_page( 'Netlify Build Trigger', 'Netlify Build Trigger', 'manage_options', NetlifyAdminMenu::$pageSlug, [$this, 'render_settings_page'] );
+  }
 
-function dbi_plugin_setting_start_date() {
-  $options = get_option( 'dbi_example_plugin_options' );
-  echo "<input id='dbi_plugin_setting_start_date' name='dbi_example_plugin_options[start_date]' type='text' value='" . esc_attr( $options['start_date'] ) . "' />";
-}
+  public function register_settings() {
+    register_setting(NetlifyAdminMenu::$optionsName, NetlifyAdminMenu::$optionsName);
+    add_settings_section( 'settings', 'Settings', [$this, 'section_text'], NetlifyAdminMenu::$pageKey );
+    add_settings_field( 'brianmmdev_netlify_build_trigger_build_hook', 'Build Hook', [$this, 'setting_build_hook'], NetlifyAdminMenu::$pageKey, 'settings' );
+    // add_settings_field( 'dbi_plugin_setting_api_key', 'Build Hook', [$this, 'setting_build_hook'], NetlifyAdminMenu::$pageKey );
+  }
 
-function dbi_render_plugin_settings_page() {
-	?>
-	<h2>Example Plugin Settings</h2>
-	<form action="options.php" method="post">
-			<?php
-			settings_fields( 'dbi_example_plugin_options' );
-			do_settings_sections( 'dbi_example_plugin' ); ?>
-			<input name="submit" class="button button-primary" type="submit" value="<?php esc_attr_e( 'Save' ); ?>" />
-	</form>
-	<?php
-}
+  public function section_text() {
+    echo '<p>Setting the Build Hook will enable the button in the admin header.</p>';
+  }
 
-function dbi_register_settings() {
-	register_setting( 'dbi_example_plugin_options', 'dbi_example_plugin_options', 'dbi_example_plugin_options_validate' );
-	add_settings_section( 'api_settings', 'API Settings', 'dbi_plugin_section_text', 'dbi_example_plugin' );
+  public function setting_build_hook() {
+    $options = get_option(NetlifyAdminMenu::$optionsName);
+    $val = "";
+    if($options) {
+      $val = esc_attr($options['build_hook']);
+    }
+    echo "<input id='brianmmdev_netlify_build_trigger_build_hook' name='" . NetlifyAdminMenu::$optionsName . "[build_hook]' type='text' value='" . $val . "' />";
+  }
 
-	add_settings_field( 'dbi_plugin_setting_api_key', 'API Key', 'dbi_plugin_setting_api_key', 'dbi_example_plugin', 'api_settings' );
-	add_settings_field( 'dbi_plugin_setting_results_limit', 'Results Limit', 'dbi_plugin_setting_results_limit', 'dbi_example_plugin', 'api_settings' );
-	add_settings_field( 'dbi_plugin_setting_start_date', 'Start Date', 'dbi_plugin_setting_start_date', 'dbi_example_plugin', 'api_settings' );
+  public function render_settings_page() {
+    ?>
+      <h2>Netlify Build Trigger Settings</h2>
+      <form action="options.php" method="post">
+          <?php
+            settings_fields(NetlifyAdminMenu::$optionsName);
+            do_settings_sections(NetlifyAdminMenu::$pageKey);
+          ?>
+          <input name="submit" class="button button-primary" type="submit" value="<?php esc_attr_e( 'Save' ); ?>" />
+      </form>
+    <?php
+  }
 }
-add_action( 'admin_init', 'dbi_register_settings' );
-
-function dbi_add_settings_page() {
-  add_options_page( 'Example plugin page', 'Example Plugin Menu', 'manage_options', 'dbi-example-plugin', 'dbi_render_plugin_settings_page' );
-}
-add_action( 'admin_menu', 'dbi_add_settings_page' );

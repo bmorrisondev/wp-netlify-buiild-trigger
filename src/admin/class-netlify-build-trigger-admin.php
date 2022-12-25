@@ -103,3 +103,5 @@ class Netlify_Build_Trigger_Admin {
 }
 
 include 'partials/admin-menu.php';
+$netlifyAdminMenu = new NetlifyAdminMenu();
+
