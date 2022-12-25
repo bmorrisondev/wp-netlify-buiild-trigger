@@ -74,6 +74,7 @@ class Netlify_Build_Trigger_Admin {
 		 */
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/netlify-build-trigger-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( 'boxicons', 'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css', array(), null, 'all' );
 
 	}
 

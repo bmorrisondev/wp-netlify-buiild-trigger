@@ -46,7 +46,7 @@
 			const buildBtn = document.createElement("li")
 			buildBtn.id = "netlify-build-btn"
 			buildBtn.innerHTML = `<a class="ab-item" href="#">
-					<span class="dashicons dashicons-controls-play"></span>
+					<i class='bx bx-play'></i>
 					<span class="ab-label" aria-hidden="true">Build Netlify Site</span>
 				</a>`
 
