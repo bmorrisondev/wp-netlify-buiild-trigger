@@ -1,0 +1,22 @@
+on:
+  workflow_dispatch:
+  
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Zip it!
+        run: |
+          mkdir dist
+          cd src
+          zip -o ../dist/build.zip *
+   #   - name: Upload a Build Artifact
+  #      uses: actions/upload-artifact@v3.1.1
+ #       with:
+#          path: dist/build.zip
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: dist/build.zip
+    
