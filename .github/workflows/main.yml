@@ -9,6 +9,7 @@ jobs:
       - name: Zip it!
         run: |
           mkdir dist
+          ls
           cd src
           zip -o ../dist/build.zip *
    #   - name: Upload a Build Artifact
